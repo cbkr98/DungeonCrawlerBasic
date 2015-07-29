@@ -1,5 +1,7 @@
 #!/bin/bash
 set -e
-javac src/dungeoncrawlerbasic/*.java
-CLASSPATH=src java dungeoncrawlerbasic.DungeonCrawlerBasic
+rm -rf src/dungeoncrawlerbasic/*.class
+mkdir -p build/run
+javac -d build/run src/dungeoncrawlerbasic/*.java
+CLASSPATH=build/run java dungeoncrawlerbasic.DungeonCrawlerBasic
 
