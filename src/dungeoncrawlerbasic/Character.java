@@ -150,9 +150,9 @@ public class Character {
     
     public void statsInitial() {
         System.out.print("Health: " + this.healthCurrent + "/" + this.healthCap + "\t\t");
-        System.out.print("Damage: " + this.damage + "(" + this.weaponEffects + ")");
+        System.out.println("Damage: " + this.damage + "(" + this.weaponEffects + ")");
         System.out.print("Armor: " + this.armor + "\t\t");
-        System.out.println("Speed: " + this.speed + "\t\t");
+        System.out.println("Speed: " + this.speed);
         System.out.println("Potions: " + this.healthPotions + " / " + this.antiVenomPotions);
         System.out.println("Poison: " + this.poisonCounters);
     }

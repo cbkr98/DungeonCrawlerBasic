@@ -5,10 +5,10 @@ import static dungeoncrawlerbasic.DungeonCrawlerBasic.random;
 public class Slime extends Character{
     public Slime() {
         this.name = "Slime";
-        this.healthCap = random(7, 1);
-        this.damage = random(1, 1);
+        this.healthCap = random(7, 5);
+        this.damage = random(3, 2);
         this.armor = random(0, 0);
-        this.speed = random(1, 1);
+        this.speed = random(2, 1);
         this.weaponEffects.add("Poison");
         this.healthPotions = random(0, 0);
         
