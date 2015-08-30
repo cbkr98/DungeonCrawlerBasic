@@ -12,13 +12,15 @@ public class Character {
     int damage = 0;
     int armor = 0;
     int speed = 0;
+    int level = 1;
     int healthPotions = 0;
     int antiVenomPotions = 0;
-    int kills = 0;
     
     int defendCounter = 0;
     int stunCounter = 0;
     int poisonCounters = 0;
+    
+    int manaPoints = 0;
     
     ArrayList<String> weaponEffects = new ArrayList<String>();
     
@@ -26,7 +28,7 @@ public class Character {
         
     public void useHealthPotion() {
         if (this.healthPotions > 0) {
-            this.healthCurrent += 30;
+            this.healthCurrent += 20;
             if (this.healthCurrent > this.healthCap) {
                 this.healthCurrent = this.healthCap;
             }
@@ -72,7 +74,7 @@ public class Character {
                     delay(500);
                 }
                 if (this.weaponEffects.contains("Poison")) {
-                    defender.poisonCounters += 3;
+                    defender.poisonCounters += 5;
                     System.out.println("Opponent poisoned!");
                     delay(500);
                 }
@@ -85,7 +87,11 @@ public class Character {
         } else {
             System.out.println("Attack missed!");
         }
-        delay(1500);
+        delay(500);
+    }
+    
+    public void criticalAttack(Character defender) {
+        defender.healthCurrent -= this.damage*2;
     }
     
     public void defend() {
@@ -103,7 +109,7 @@ public class Character {
     
     public void startTurn() {
         if (this.poisonCounters > 0) {
-            this.healthCurrent -= 5;
+            this.healthCurrent -= 3;
             this.poisonCounters -= 1;
         }
         if (this.stunCounter > 0) {
@@ -150,15 +156,32 @@ public class Character {
     
     public void statsInitial() {
         System.out.print("Health: " + this.healthCurrent + "/" + this.healthCap + "\t\t");
-        System.out.println("Damage: " + this.damage + "(" + this.weaponEffects + ")");
+        System.out.print("Damage: " + this.damage + this.weaponEffects + "\t\t");
         System.out.print("Armor: " + this.armor + "\t\t");
-        System.out.println("Speed: " + this.speed);
-        System.out.println("Potions: " + this.healthPotions + " / " + this.antiVenomPotions);
-        System.out.println("Poison: " + this.poisonCounters);
+        System.out.print("Mana: + " + this.manaPoints);
+        System.out.println("");
     }
     
     public void showStats() {
-        //System.out.println("Health")
+        System.out.println("");
+        System.out.println(this.name + "'s stats -");
+        System.out.println(" Health: " + this.healthCurrent + "/" + this.healthCap);
+        System.out.println(" Damage: " + this.damage + this.weaponEffects);
+        System.out.println("  Armor: " + this.armor);
+        System.out.println("  Speed: " + this.speed);
+        System.out.println("Potions: Health - " + this.healthPotions + " / Anti-Venom - " + this.antiVenomPotions);
+        System.out.println(" Poison: " + this.poisonCounters);
+        System.out.println("   Mana: " + this.manaPoints);
+        System.out.println("");
+    }
+    
+    public void improveStatsByLevel(Character leveler) {
+        this.healthCap = this.healthCap * leveler.level;
+        this.damage = this.damage * leveler.level;
+        this.armor = this.armor * leveler.level;
+        this.speed = (this.speed * leveler.level)/2;
+        
+        this.maximizeStats();
     }
         
     public boolean run(Character opponent) {

@@ -5,10 +5,10 @@ import static dungeoncrawlerbasic.DungeonCrawlerBasic.random;
 public class Dragon extends Character{
     public Dragon() {
         this.name = "Dragon";
-        this.healthCap = random(125, 225);
-        this.damage = random(25, 45);
-        this.armor = random(20, 10);
-        this.speed = random(6, 5);
+        this.healthCap = random(20, 30);
+        this.damage = random(12, 15);
+        this.armor = random(7, 5);
+        this.speed = random(5, 4);
         this.weaponEffects.add("Burn");
         this.healthPotions = random(4, 4);
         
