@@ -2,7 +2,7 @@ package dungeoncrawlerbasic;
 
 import static dungeoncrawlerbasic.DungeonCrawlerBasic.random;
 
-public class Slime extends Character{
+public class Slime extends Enemy{
     public Slime() {
         this.name = "Slime";
         this.healthCap = random(4, 2);

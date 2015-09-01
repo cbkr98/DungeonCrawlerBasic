@@ -2,7 +2,7 @@ package dungeoncrawlerbasic;
 
 import static dungeoncrawlerbasic.DungeonCrawlerBasic.random;
 
-public class Ogre extends Character{
+public class Ogre extends Enemy{
     public Ogre() {
         this.name = "Ogre";
         this.healthCap = random(15, 20);

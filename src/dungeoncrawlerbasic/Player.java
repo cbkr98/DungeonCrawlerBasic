@@ -9,7 +9,6 @@ public class Player extends Character {
     int xpCap = 2;
     int skillPoints = 0;
     int kills = 0;
-    String spell = "";
     String nickname = "";
     static Scanner in = new Scanner(System.in);
     
@@ -20,7 +19,7 @@ public class Player extends Character {
         this.level += 1;
         this.skillPoints += 6;
         boolean FinishFlag = false;
-        delay(1000);
+        delay(400);
         
         while (FinishFlag == false) {
             System.out.println("Choose a stat to level up:");
@@ -30,7 +29,7 @@ public class Player extends Character {
             System.out.println("2) Damage +1 / 2 points");
             System.out.println("3) Armor +1 / 3 points");
             System.out.println("4) Speed +1 / 4 points");
-            System.out.println("5) Finish");
+            System.out.println("5) Finish\n>");
             String inputLevelUp = in.nextLine();
             
             boolean levelUpFlag = false;
@@ -69,7 +68,7 @@ public class Player extends Character {
             if (!levelUpFlag) {
                 System.out.println("You don't have enought points for this");
             }
-            delay(1000); 
+            delay(400); 
         }
         if (this.nickname == "Assassin") {
             this.healthCap = (this.healthCap + this.healthCap/8) + 2;
@@ -90,8 +89,8 @@ public class Player extends Character {
     }
     
     // Create the enemy
-    public Character enemyChooser() {
-    Character enemy = new Character();
+    public Enemy enemyChooser() {
+        Enemy enemy = new Enemy();
         if (this.level >= 1 && this.level < 6) {
             enemy = enemyChooserLevel1to5();
         } else if (this.level >= 6 && this.level < 11) {
@@ -105,7 +104,7 @@ public class Player extends Character {
         }
         return enemy;
     }
-    public static Character enemyChooserLevel1to5() {
+    public static Enemy enemyChooserLevel1to5() {
         int x = (int)((Math.random()*15)+1);
         if (x >= 1 && x < 10) {
             return new Skeleton();
@@ -116,7 +115,7 @@ public class Player extends Character {
         } 
         return new Skeleton();
     }
-    public static Character enemyChooserLevel6to10() {
+    public static Enemy enemyChooserLevel6to10() {
         int x = (int)((Math.random()*25)+1);
         if (x >= 1 && x < 10) {
             return new Goblin();
@@ -129,7 +128,7 @@ public class Player extends Character {
         }    
         return new Goblin();
     }
-    public static Character enemyChooserLevel11to15() {
+    public static Enemy enemyChooserLevel11to15() {
         int x = (int)((Math.random()*30)+1);
         if (x >= 1 && x < 5) {
             return new Goblin();
@@ -144,7 +143,7 @@ public class Player extends Character {
         }    
         return new Zombie();
     }
-    public static Character enemyChooserLevel15to20() {
+    public static Enemy enemyChooserLevel15to20() {
         int x = (int)((Math.random()*35)+1);
         if (x >= 1 && x < 5) {
             return new Zombie();
@@ -161,7 +160,7 @@ public class Player extends Character {
         }    
         return new Warrior();
     }
-    public static Character enemyChooserLevel20orUp() {
+    public static Enemy enemyChooserLevel20orUp() {
         int x = (int)((Math.random()*40)+1);
         if (x >= 1 && x < 5) {
             return new Slime();
@@ -180,7 +179,7 @@ public class Player extends Character {
     }
     
     public static Player chooseClass() {
-        System.out.println("Choose a class:\n1) Warrior\n2) Rogue\n3) Assassin\n>");
+        System.out.print("Choose a class:\n1) Warrior\t(++HP, +AT, +AR, -SP)\n2) Rogue\t(+HP, +AT, +AR, +SP)\n3) Assassin\t(-HP, ++AT, -AR, ++SP)\n> ");
         String inputClass = in.nextLine();
         if (inputClass.equals("1")) {
             return new PlayerWarrior();
@@ -191,5 +190,99 @@ public class Player extends Character {
         }
         return new PlayerWarrior();
     }
+    
+    public void chooseSpell() {
+        System.out.print("Choose a spell:\n1) Heal\t\t(+40 hp)\n2) Fireball\t(Enemy: -hp, -ar)\n3) Ice\t\t(Freeze enemy)\n> ");
+        String inputSpell = in.nextLine();
+        if (inputSpell.equals("1")) {
+            this.spellName = "Heal";
+        } else if (inputSpell.equals("2")) {
+            this.spellName = "Fireball";
+        } else if (inputSpell.equals("3")) {
+            this.spellName = "Ice";
+        }
+    }
+    
+    public void playerAttackPhase(Character enemy) {
+        System.out.println("\nWhat is your move?");
+        System.out.println("1) Attack");
+        System.out.println("2) Spell");
+        System.out.println("3) Defend");
+        System.out.println("4) Use potion");
+        System.out.println("5) Run");
+        System.out.println("6) Show stats");
+        System.out.print("> ");
+        String input1 = in.nextLine();
+
+        if (input1.equals("1")) {
+            this.attack(enemy);
+            if (enemy.healthCurrent <= 0) {
+            }
+            this.attempt = true; 
+        } else if (input1.equals("2")) {
+            this.useSpell(enemy);
+            if (enemy.healthCurrent<= 0) {
+            }
+        } else if (input1.equals("3")) {
+            this.defend();
+            this.attempt = true;
+        } else if (input1.equals("4")) {
+            System.out.println("Which kind?");
+            System.out.println("1)Health potion");
+            System.out.println("2)Anti-venom potion");        
+            String inputPotion = in.nextLine();
+
+            if (inputPotion.equals("1")) {
+                if (this.healthCurrent == this.healthCap) {
+                    System.out.println("You can't drink a health potion while at full health");
+                } else {
+                    this.useHealthPotion();
+                }
+            } else if (inputPotion.equals("2")) {
+                this.useAntiVenomPotion();
+            }
+            this.attempt = true;
+        } else if (input1.equals("5")) {
+            this.run(enemy);
+            if (this.run(enemy) == true ) {  
+            } else {
+                System.out.println("Your attempt failed");
+                delay(400);
+            }
+            this.attempt = true;
+        } else if (input1.equals("6")) {
+            boolean end = false;
+            while (!end) {
+                this.showStats();
+                enemy.showStats();
+                System.out.println("1) Continue");
+                System.out.print("> ");
+                String inputContinue = in.nextLine();
+                if (inputContinue.equals("1")) {
+                    end = true;
+                }
+            this.attempt = false;    
+            } 
+        } else {
+            System.out.println("That is not a valid action.");
+        }
+    }   
+        
+    public void defeatedEnemy(Character enemy) {
+        System.out.println("You survived!");
+            delay(400);
+            if (enemy.healthCurrent <= 0) {
+                enemy.itemDrop(this);
+                this.getStuff(enemy);
+                this.kills += 1;
+                this.xpCurrent += 1;
+            }
+            if (this.xpCurrent == this.xpCap) {
+                this.levelUp();
+            }
+        delay(400);
+        System.out.println("Kills so far: " + this.kills);
+        System.out.println("\n\n\n");
+    } 
 }
 

@@ -7,6 +7,7 @@ import static dungeoncrawlerbasic.DungeonCrawlerBasic.random;
 
 public class Character {
     String name = "";
+    String spellName = "";
     int healthCurrent = 0;
     int healthCap = 0;
     int damage = 0;
@@ -20,8 +21,9 @@ public class Character {
     int stunCounter = 0;
     int poisonCounters = 0;
     
-    int manaPoints = 0;
+    int manaPoints = 4;
     
+    boolean attempt = false;
     ArrayList<String> weaponEffects = new ArrayList<String>();
     
     boolean isStunned = false;
@@ -50,16 +52,16 @@ public class Character {
         int attackerRoll = (int)((Math.random()*(this.speed*30))+1);
         if (attackerRoll > defenderRoll) {
             System.out.println("Attack hit!");
-            delay(500);
+            delay(400);
             if (defender.defendCounter > 0) {
                 System.out.println("Hit blocked!");
                 defender.healthCurrent = (int)(defender.healthCurrent - (this.damage * .5));
-                delay(500);
+                delay(400);
                 int stunChance = random(10, 1);
                 if (stunChance > 6) {
                     this.stunCounter += 1;
                     System.out.println("Stunned!");
-                    delay(500);
+                    delay(400);
                 } 
                 defender.defendCounter -= 1;    
             } else if (defender.armor >= this.damage) {
@@ -71,12 +73,12 @@ public class Character {
                 if (this.weaponEffects.contains("Burn")) {
                     defender.armor = (int)(defender.armor * .85);
                     System.out.println("Opponent armor reduced!");
-                    delay(500);
+                    delay(400);
                 }
                 if (this.weaponEffects.contains("Poison")) {
                     defender.poisonCounters += 5;
                     System.out.println("Opponent poisoned!");
-                    delay(500);
+                    delay(400);
                 }
                 int defenderArmor = defender.armor;
                 if (this.weaponEffects.contains("Shred")) {
@@ -87,7 +89,29 @@ public class Character {
         } else {
             System.out.println("Attack missed!");
         }
-        delay(500);
+        delay(400);
+    }
+    
+    public void useSpell(Character opponent) {
+        if (this.manaPoints == 0) {
+            System.out.println("Insufficient mana");
+            this.attempt = false;
+        } else if (this.spellName == "Heal") {
+            this.manaPoints -= 1;
+            this.healthCurrent += 40;
+            this.attempt = true;
+        } else if (this.spellName == "Fireball") {
+            this.manaPoints -= 1;
+            opponent.armor -= 2;
+            opponent.healthCurrent -= this.damage/3;
+            this.attempt = true;
+        } else if (this.spellName == "Ice") {
+            this.manaPoints -= 1;
+            opponent.isStunned = true;
+            this.attempt = true;
+            System.out.println("This worked");
+        }
+        System.out.println("You use " + this.spellName + "!");
     }
     
     public void criticalAttack(Character defender) {
@@ -124,6 +148,7 @@ public class Character {
     }
     
     public void endTurn() {
+        this.isStunned = false;
     }
     
     public void endRound() {
@@ -157,8 +182,7 @@ public class Character {
     public void statsInitial() {
         System.out.print("Health: " + this.healthCurrent + "/" + this.healthCap + "\t\t");
         System.out.print("Damage: " + this.damage + this.weaponEffects + "\t\t");
-        System.out.print("Armor: " + this.armor + "\t\t");
-        System.out.print("Mana: + " + this.manaPoints);
+        System.out.print("Armor: " + this.armor);
         System.out.println("");
     }
     
@@ -172,7 +196,24 @@ public class Character {
         System.out.println("Potions: Health - " + this.healthPotions + " / Anti-Venom - " + this.antiVenomPotions);
         System.out.println(" Poison: " + this.poisonCounters);
         System.out.println("   Mana: " + this.manaPoints);
+        System.out.println("  Spell: " + this.spellName);
         System.out.println("");
+    }
+    
+    public static void preRoundSetup(Player player, Character enemy) {
+        System.out.println("");
+        System.out.println("Your stats:");
+        System.out.println("-----------");
+        System.out.print("XP: " + player.xpCurrent + "/" + player.xpCap);
+        System.out.println("\t\t\tLevel: " + player.level);
+        player.statsInitial();
+        System.out.println("");
+        System.out.println(enemy.name + "'s stats");
+        System.out.println("-----------");
+        enemy.statsInitial();
+                
+        player.attempt = false;
+        player.manaPoints = 4;
     }
     
     public void improveStatsByLevel(Character leveler) {
@@ -195,6 +236,14 @@ public class Character {
             return true;
         }
         return false;
+    }
+    
+    public void stunned() {
+        delay(400);
+        System.out.println("");
+        System.out.println("Stunned!");
+        this.attempt = true;
+        delay(400);
     }
     
     public void maximizeStats() {
